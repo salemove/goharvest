@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS outbox (
   kafka_topic         VARCHAR(249) NOT NULL,
   kafka_key           VARCHAR(100) NOT NULL,  -- pick your own maximum key size
   kafka_partition     INTEGER DEFAULT -1 NOT NULL,
-  kafka_value         VARCHAR(10000),         -- pick your own maximum value size
+  kafka_value         bytea,
   kafka_header_keys   TEXT[] NOT NULL,
   kafka_header_values TEXT[] NOT NULL,
   leader_id           UUID
@@ -206,7 +206,7 @@ Replace `${outbox_table}` and bind the query variables as appropriate:
 
 * `kafka_topic` column specifies an arbitrary topic name, which may differ among records.
 * `kafka_key` is a mandatory `string` key. Each record must be published with a specified key, which will affect its placement among the topic's partitions.
-* `kafka_value` is an optional `string` value. If unspecified, the record will be published with a `nil` value, allowing it to be used as a compaction tombstone.
+* `kafka_value` is an optional `binary` value. If unspecified, the record will be published with a `nil` value, allowing it to be used as a compaction tombstone.
 * `kafka_header_keys` and `kafka_header_values` are arrays that specify the keys and values of record headers. When used each element in `kafka_header_keys` corresponds to an element in `kafka_header_values` at the same index. If not using headers, set both arrays to empty.
 
 > **Note**: **Writing outbox records should be performed in the same transaction as other related database updates.** Otherwise, messaging will not be atomic — the updates may be stably persisted while the message might be lost, and *vice versa*.

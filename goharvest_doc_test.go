@@ -28,7 +28,7 @@ func Example() {
 				create_time         TIMESTAMP WITH TIME ZONE NOT NULL,
 				kafka_topic         VARCHAR(249) NOT NULL,
 				kafka_key           VARCHAR(100) NOT NULL,  -- pick your own key size
-				kafka_value         VARCHAR(10000),         -- pick your own value size
+				kafka_value         bytea,
 				kafka_header_keys   TEXT[] NOT NULL,
 				kafka_header_values TEXT[] NOT NULL,
 				leader_id           UUID
