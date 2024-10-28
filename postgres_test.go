@@ -169,6 +169,15 @@ func TestExecuteMark_success(t *testing.T) {
 			KafkaHeaders: KafkaHeaders{},
 			LeaderID:     nil,
 		},
+		{
+			ID:           79,
+			CreateTime:   time.Now(),
+			KafkaTopic:   "kafka_topic",
+			KafkaKey:     "kafka_key",
+			KafkaValue:   nil,
+			KafkaHeaders: KafkaHeaders{},
+			LeaderID:     nil,
+		},
 	}
 	reverse := func(recs []OutboxRecord) []OutboxRecord {
 		reversed := make([]OutboxRecord, len(recs))
@@ -206,7 +215,7 @@ func TestExecuteMark_success(t *testing.T) {
 
 	records, err := b.Mark(leaderID, testMarkQueryLimit)
 	assert.Nil(t, err)
-	assert.ElementsMatch(t, []interface{}{exp[0], exp[1]}, records)
+	assert.ElementsMatch(t, []interface{}{exp[0], exp[1], exp[2]}, records)
 	assert.Nil(t, mock.ExpectationsWereMet())
 }
 
