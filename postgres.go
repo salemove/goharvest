@@ -138,7 +138,9 @@ func (db *database) Mark(leaderID uuid.UUID, limit int) ([]OutboxRecord, error) 
 			pq.Array(&values),
 			&record.LeaderID,
 		)
-		record.KafkaValue = String(string(byteValue[:]))
+		if byteValue[:] != nil {
+			record.KafkaValue = String(string(byteValue[:]))
+		}
 		if err != nil {
 			return nil, err
 		}
