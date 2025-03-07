@@ -313,8 +313,13 @@ func (h *harvest) spawnSendBattery() {
 			ensureState(lastID == nil || rec.ID >= *lastID, "discontinuity for key %s: ID %s, lastID: %v", rec.KafkaKey, rec.ID, lastID)
 			lastID = &rec.ID
 
+			kafkaPartition := rec.KafkaPartition
+			if kafkaPartition == -1 {
+				kafkaPartition = kafka.PartitionAny
+			}
+
 			m := &kafka.Message{
-				TopicPartition: kafka.TopicPartition{Topic: &rec.KafkaTopic, Partition: kafka.PartitionAny},
+				TopicPartition: kafka.TopicPartition{Topic: &rec.KafkaTopic, Partition: kafkaPartition},
 				Key:            []byte(rec.KafkaKey),
 				Value:          stringPointerToByteArray(rec.KafkaValue),
 				Opaque:         rec,
