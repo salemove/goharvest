@@ -23,13 +23,14 @@ type KafkaHeaders []KafkaHeader
 
 // OutboxRecord depicts a single entry in the outbox table. It can be used for both reading and writing operations.
 type OutboxRecord struct {
-	ID           int64
-	CreateTime   time.Time
-	KafkaTopic   string
-	KafkaKey     string
-	KafkaValue   *string
-	KafkaHeaders KafkaHeaders
-	LeaderID     *uuid.UUID
+	ID             int64
+	CreateTime     time.Time
+	KafkaTopic     string
+	KafkaKey       string
+	KafkaPartition int32
+	KafkaValue     *string
+	KafkaHeaders   KafkaHeaders
+	LeaderID       *uuid.UUID
 }
 
 // String is a convenience function that returns a pointer to the given str argument, for use with setting OutboxRecord.Value.
@@ -43,6 +44,7 @@ func (rec OutboxRecord) String() string {
 		", CreateTime=", rec.CreateTime,
 		", KafkaTopic=", rec.KafkaTopic,
 		", KafkaKey=", rec.KafkaKey,
+		", KafkaPartition=", rec.KafkaPartition,
 		", KafkaValue=", rec.KafkaValue,
 		", KafkaHeaders=", rec.KafkaHeaders,
 		", LeaderID=", rec.LeaderID, "]")

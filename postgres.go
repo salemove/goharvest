@@ -28,7 +28,7 @@ WHERE id IN (
   ORDER BY id
   LIMIT $2
 )
-RETURNING id, create_time, kafka_topic, kafka_key, kafka_value, kafka_header_keys, kafka_header_values, leader_id
+RETURNING id, create_time, kafka_topic, kafka_key, kafka_partition, kafka_value, kafka_header_keys, kafka_header_values, leader_id
 `
 
 const purgeQueryTemplate = `
@@ -131,6 +131,7 @@ func (db *database) Mark(leaderID uuid.UUID, limit int) ([]OutboxRecord, error) 
 			&record.CreateTime,
 			&record.KafkaTopic,
 			&record.KafkaKey,
+			&record.KafkaPartition,
 			&record.KafkaValue,
 			pq.Array(&keys),
 			pq.Array(&values),

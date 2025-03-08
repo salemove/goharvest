@@ -122,12 +122,13 @@ func TestExecuteMarkQuery_scanError(t *testing.T) {
 		"create_time",
 		"kafka_topic",
 		"kafka_key",
+		"kafka_partition",
 		"kafka_value",
 		"kafka_header_keys",
 		"kafka_header_values",
 		"leader_id",
 	})
-	rows.AddRow("non-int", "", "", "", "", pq.Array([]string{"some-key"}), pq.Array([]string{"some-value"}), leaderID)
+	rows.AddRow("non-int", "", "", "", "", "", pq.Array([]string{"some-key"}), pq.Array([]string{"some-value"}), leaderID)
 	mark.ExpectQuery().WithArgs(leaderID, testMarkQueryLimit).WillReturnRows(rows)
 
 	records, err := b.Mark(leaderID, testMarkQueryLimit)
@@ -150,24 +151,26 @@ func TestExecuteMark_success(t *testing.T) {
 	leaderID, _ := uuid.NewRandom()
 	exp := []OutboxRecord{
 		{
-			ID:         77,
-			CreateTime: time.Now(),
-			KafkaTopic: "kafka_topic",
-			KafkaKey:   "kafka_key",
-			KafkaValue: String("kafka_value"),
+			ID:             77,
+			CreateTime:     time.Now(),
+			KafkaTopic:     "kafka_topic",
+			KafkaKey:       "kafka_key",
+			KafkaPartition: 1,
+			KafkaValue:     String("kafka_value"),
 			KafkaHeaders: KafkaHeaders{
 				KafkaHeader{Key: "some-key", Value: "some-value"},
 			},
 			LeaderID: nil,
 		},
 		{
-			ID:           78,
-			CreateTime:   time.Now(),
-			KafkaTopic:   "kafka_topic",
-			KafkaKey:     "kafka_key",
-			KafkaValue:   String("kafka_value"),
-			KafkaHeaders: KafkaHeaders{},
-			LeaderID:     nil,
+			ID:             78,
+			CreateTime:     time.Now(),
+			KafkaTopic:     "kafka_topic",
+			KafkaKey:       "kafka_key",
+			KafkaPartition: 1,
+			KafkaValue:     String("kafka_value"),
+			KafkaHeaders:   KafkaHeaders{},
+			LeaderID:       nil,
 		},
 	}
 	reverse := func(recs []OutboxRecord) []OutboxRecord {
@@ -183,6 +186,7 @@ func TestExecuteMark_success(t *testing.T) {
 		"create_time",
 		"kafka_topic",
 		"kafka_key",
+		"kafka_partition",
 		"kafka_value",
 		"kafka_header_keys",
 		"kafka_header_values",
@@ -196,6 +200,7 @@ func TestExecuteMark_success(t *testing.T) {
 			expRec.CreateTime,
 			expRec.KafkaTopic,
 			expRec.KafkaKey,
+			expRec.KafkaPartition,
 			expRec.KafkaValue,
 			pq.Array(headerKeys),
 			pq.Array(headerValues),
@@ -227,6 +232,7 @@ func TestExecuteMark_headerLengthMismatch(t *testing.T) {
 		"create_time",
 		"kafka_topic",
 		"kafka_key",
+		"kafka_partition",
 		"kafka_value",
 		"kafka_header_keys",
 		"kafka_header_values",
@@ -237,6 +243,7 @@ func TestExecuteMark_headerLengthMismatch(t *testing.T) {
 		time.Now(),
 		"some-topic",
 		"some-key",
+		-1,
 		"some-value",
 		pq.Array([]string{"k0"}),
 		pq.Array([]string{"v0", "v1"}),

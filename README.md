@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS outbox (
   create_time         TIMESTAMP WITH TIME ZONE NOT NULL,
   kafka_topic         VARCHAR(249) NOT NULL,
   kafka_key           VARCHAR(100) NOT NULL,  -- pick your own maximum key size
+  kafka_partition     INTEGER DEFAULT -1 NOT NULL,
   kafka_value         VARCHAR(10000),         -- pick your own maximum value size
   kafka_header_keys   TEXT[] NOT NULL,
   kafka_header_values TEXT[] NOT NULL,
