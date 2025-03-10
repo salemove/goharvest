@@ -126,17 +126,21 @@ func (db *database) Mark(leaderID uuid.UUID, limit int) ([]OutboxRecord, error) 
 		record := OutboxRecord{}
 		var keys []string
 		var values []string
+		var byteValue []byte
 		err := rows.Scan(
 			&record.ID,
 			&record.CreateTime,
 			&record.KafkaTopic,
 			&record.KafkaKey,
 			&record.KafkaPartition,
-			&record.KafkaValue,
+			&byteValue,
 			pq.Array(&keys),
 			pq.Array(&values),
 			&record.LeaderID,
 		)
+		if byteValue[:] != nil {
+			record.KafkaValue = String(string(byteValue[:]))
+		}
 		if err != nil {
 			return nil, err
 		}
