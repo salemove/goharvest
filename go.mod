@@ -13,7 +13,7 @@ require (
 	github.com/obsidiandynamics/libstdgo v0.4.1
 	github.com/sirupsen/logrus v1.5.0
 	github.com/stretchr/testify v1.5.1
-	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.5.2
 	gopkg.in/yaml.v2 v2.2.8
 )
