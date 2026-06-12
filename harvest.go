@@ -7,14 +7,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/google/uuid"
 	"github.com/obsidiandynamics/goharvest/metric"
 	"github.com/obsidiandynamics/goneli"
 	"github.com/obsidiandynamics/libstdgo/concurrent"
 	"github.com/obsidiandynamics/libstdgo/diags"
 	"github.com/obsidiandynamics/libstdgo/scribe"
-	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
-	_ "gopkg.in/confluentinc/confluent-kafka-go.v1/kafka/librdkafka"
 )
 
 var noLeader uuid.UUID
