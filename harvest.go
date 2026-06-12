@@ -7,14 +7,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/google/uuid"
 	"github.com/obsidiandynamics/goharvest/metric"
 	"github.com/obsidiandynamics/goneli"
 	"github.com/obsidiandynamics/libstdgo/concurrent"
 	"github.com/obsidiandynamics/libstdgo/diags"
 	"github.com/obsidiandynamics/libstdgo/scribe"
-	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
-	_ "gopkg.in/confluentinc/confluent-kafka-go.v1/kafka/librdkafka"
 )
 
 var noLeader uuid.UUID
@@ -310,7 +309,9 @@ func (h *harvest) spawnSendBattery() {
 
 		var lastID *int64
 		for rec := range records {
-			ensureState(lastID == nil || rec.ID >= *lastID, "discontinuity for key %s: ID %s, lastID: %v", rec.KafkaKey, rec.ID, lastID)
+			if lastID != nil && rec.ID < *lastID {
+				h.logger().E()("Discontinuity for key %s: ID %d, lastID: %d", rec.KafkaKey, rec.ID, *lastID)
+			}
 			lastID = &rec.ID
 
 			kafkaPartition := rec.KafkaPartition
