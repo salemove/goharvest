@@ -540,6 +540,47 @@ func TestThrottleKeys(t *testing.T) {
 	assert.Nil(t, h.Await())
 }
 
+func TestMarkedIDDiscontinuity(t *testing.T) {
+	prod := concurrent.NewAtomicReference()
+	m, db, neli, config := fixtures{producerMockSetup: func(pm *prodMock) {
+		prod.Set(pm)
+	}}.create()
+
+	h, err := New(config)
+	require.Nil(t, err)
+	assertNoError(t, h.Start)
+
+	(*neli).AcquireLeader()
+	wait(t).UntilAsserted(isNotNil(prod.Get))
+
+	// Mark a record with a high ID and see it through to delivery.
+	first := generateRecords(1, 200)
+	db.markedRecords <- first
+	wait(t).UntilAsserted(intEqual(1, prod.Get().(*prodMock).c.Produce.GetInt))
+	deliverAll(first, nil, prod.Get().(*prodMock).events)
+	wait(t).UntilAsserted(intEqual(1, db.c.Purge.GetInt))
+
+	// A subsequent mark may legitimately surface a lower ID (IDs are assigned at insert time but rows only become
+	// visible at commit time, so a slow-committing transaction can show up late).
+	second := generateRecords(1, 100)
+	db.markedRecords <- second
+
+	// The discontinuity is logged as an error...
+	wait(t).UntilAsserted(m.ContainsEntries().
+		Having(scribe.LogLevel(scribe.Error)).
+		Having(scribe.MessageEqual("Discontinuity for key key-0: ID 100, lastID: 200")).
+		Passes(scribe.Count(1)))
+
+	// ... but the record is still published, and the harvester carries on unaffected.
+	wait(t).UntilAsserted(intEqual(2, prod.Get().(*prodMock).c.Produce.GetInt))
+	deliverAll(second, nil, prod.Get().(*prodMock).events)
+	wait(t).UntilAsserted(intEqual(2, db.c.Purge.GetInt))
+	assert.Equal(t, Running, h.State())
+
+	h.Stop()
+	assert.Nil(t, h.Await())
+}
+
 func TestPollDeadlineExceeded(t *testing.T) {
 	m, db, neli, config := fixtures{}.create()
 

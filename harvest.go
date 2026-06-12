@@ -309,7 +309,9 @@ func (h *harvest) spawnSendBattery() {
 
 		var lastID *int64
 		for rec := range records {
-			ensureState(lastID == nil || rec.ID >= *lastID, "discontinuity for key %s: ID %s, lastID: %v", rec.KafkaKey, rec.ID, lastID)
+			if lastID != nil && rec.ID < *lastID {
+				h.logger().E()("Discontinuity for key %s: ID %d, lastID: %d", rec.KafkaKey, rec.ID, *lastID)
+			}
 			lastID = &rec.ID
 
 			kafkaPartition := rec.KafkaPartition
