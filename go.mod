@@ -23,4 +23,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/obsidiandynamics/goneli => github.com/salemove/goneli v0.0.0-20260612104534-a041696a73ef
+replace github.com/obsidiandynamics/goneli => github.com/salemove/goneli v0.0.0-20260616091238-a16ba052266f

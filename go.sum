@@ -279,8 +279,8 @@ github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJ
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.12.0 h1:exVL4IDcn6na9z1rAb56Vxr+CgyK3nn3O+epU5NdKM8=
 github.com/rogpeppe/go-internal v1.12.0/go.mod h1:E+RYuTGaKKdloAfM02xzb0FW3Paa99yedzYV+kq4uf4=
-github.com/salemove/goneli v0.0.0-20260612104534-a041696a73ef h1:HzT6vbQz+rzwjb3/e0W87BQ5Ij5fIVuQLtdUzo/ClB8=
-github.com/salemove/goneli v0.0.0-20260612104534-a041696a73ef/go.mod h1:FQGQ9ajGAzcZDZ1GY5bQX2fQna8YQaVriUiTMRnleig=
+github.com/salemove/goneli v0.0.0-20260616091238-a16ba052266f h1:LKVHIPps/lYPztcqWtWaAVbZ1k4jKaiyHwBEu4SNm9o=
+github.com/salemove/goneli v0.0.0-20260616091238-a16ba052266f/go.mod h1:FQGQ9ajGAzcZDZ1GY5bQX2fQna8YQaVriUiTMRnleig=
 github.com/secure-systems-lab/go-securesystemslib v0.4.0 h1:b23VGrQhTA8cN2CbBw7/FulN9fTtqYUdS5+Oxzt+DUE=
 github.com/secure-systems-lab/go-securesystemslib v0.4.0/go.mod h1:FGBZgq2tXWICsxWQW1msNf49F0Pf2Op5Htayx335Qbs=
 github.com/serialx/hashring v0.0.0-20200727003509-22c0c7ab6b1b h1:h+3JX2VoWTFuyQEo87pStk/a99dzIO1mM9KxIyLPGTU=

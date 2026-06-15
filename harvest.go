@@ -51,6 +51,7 @@ type Harvest interface {
 	Await() error
 	State() State
 	IsLeader() bool
+	IsGroupJoined() bool
 	LeaderID() *uuid.UUID
 	InFlightRecords() int
 	InFlightRecordKeys() []string
@@ -184,6 +185,15 @@ func (h *harvest) Start() error {
 // IsLeader returns true if the current Harvest is the leader among competing instances.
 func (h *harvest) IsLeader() bool {
 	return h.LeaderID() != nil
+}
+
+// IsGroupJoined returns true once the harvester has completed the initial join
+// of its leader election group.
+func (h *harvest) IsGroupJoined() bool {
+	if h.State() == Created {
+		return false
+	}
+	return h.neli.IsGroupJoined()
 }
 
 // LeaderID returns the leader UUID of the current instance, if it is a leader at the time of this call.
