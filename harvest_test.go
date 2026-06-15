@@ -134,8 +134,10 @@ func TestCorrectInitialisation(t *testing.T) {
 	h, err := New(config)
 	require.Nil(t, err)
 	assert.Equal(t, Created, h.State())
+	assert.False(t, h.IsGroupJoined())
 	assertNoError(t, h.Start)
 	assert.Equal(t, Running, h.State())
+	assert.True(t, h.IsGroupJoined())
 
 	assert.Equal(t, config.DataSource, givenDataSource)
 	assert.Equal(t, config.OutboxTable, givenOutboxTable)
