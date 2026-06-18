@@ -567,9 +567,9 @@ func TestMarkedIDDiscontinuity(t *testing.T) {
 	second := generateRecords(1, 100)
 	db.markedRecords <- second
 
-	// The discontinuity is logged as an error...
+	// The discontinuity is logged as a warning...
 	wait(t).UntilAsserted(m.ContainsEntries().
-		Having(scribe.LogLevel(scribe.Error)).
+		Having(scribe.LogLevel(scribe.Warn)).
 		Having(scribe.MessageEqual("Discontinuity for key key-0: ID 100, lastID: 200")).
 		Passes(scribe.Count(1)))
 
