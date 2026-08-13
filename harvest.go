@@ -52,6 +52,7 @@ type Harvest interface {
 	State() State
 	IsLeader() bool
 	IsGroupJoined() bool
+	TimeSinceLastPulse() time.Duration
 	LeaderID() *uuid.UUID
 	InFlightRecords() int
 	InFlightRecordKeys() []string
@@ -194,6 +195,18 @@ func (h *harvest) IsGroupJoined() bool {
 		return false
 	}
 	return h.neli.IsGroupJoined()
+}
+
+// TimeSinceLastPulse returns the time elapsed since the background poller last
+// started a leader election poll cycle. It grows without bound while the
+// poller is stalled or stopped, making it usable as a liveness signal. While
+// no poll cycle has occurred yet — including before Start() — the duration is
+// measured from the Unix epoch, so it reads as maximally stale.
+func (h *harvest) TimeSinceLastPulse() time.Duration {
+	if h.State() == Created {
+		return time.Since(time.Unix(0, 0))
+	}
+	return h.neli.Deadline().Elapsed()
 }
 
 // LeaderID returns the leader UUID of the current instance, if it is a leader at the time of this call.

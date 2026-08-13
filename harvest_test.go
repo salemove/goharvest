@@ -135,9 +135,11 @@ func TestCorrectInitialisation(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, Created, h.State())
 	assert.False(t, h.IsGroupJoined())
+	assert.Greater(t, h.TimeSinceLastPulse(), 24*time.Hour, "should read maximally stale before any pulse")
 	assertNoError(t, h.Start)
 	assert.Equal(t, Running, h.State())
 	assert.True(t, h.IsGroupJoined())
+	wait(t).Until(func() bool { return h.TimeSinceLastPulse() < time.Minute })
 
 	assert.Equal(t, config.DataSource, givenDataSource)
 	assert.Equal(t, config.OutboxTable, givenOutboxTable)
